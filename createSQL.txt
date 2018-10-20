@@ -1,0 +1,112 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf600
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green116\blue0;\red255\green255\blue255;\red0\green0\blue0;
+\red170\green13\blue145;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c45490\c0;\csgenericrgb\c100000\c100000\c100000;\csgenericrgb\c0\c0\c0;
+\csgenericrgb\c66667\c5098\c56863;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs26 \cf2 \cb3 -- Three primary key constraints\
+\cf4 	\cf2 -- Movie.id\
+\cf4     \cf2 -- Actor.id\
+\cf4     \cf2 -- Director.id\
+\cf4     \cf2 -- more\
+-- Six referential integrity constraints, \
+\cf4     \cf2 -- mid in MovieGenre is a foreign key from Movie\
+\cf4     \cf2 -- mid in MovieDirector is a foreign key from Movie\
+\cf4     \cf2 -- mid in MovieActor is a foreign key from Movie\
+\cf4     \cf2 -- mid in Review is a foreign key from Movie\
+\cf4     \cf2 -- did in MovieDirector is a foreign key from Director\
+\cf4     \cf2 -- aid in MovieActor is a foreign key from Actor\
+-- Three CHECK constraints\
+\cf4 	\cf2 -- date of birth is earlier than date of death\
+\cf4     \cf2 -- rating in review is between 0 to 5\
+\cf4     \cf2 -- must have a first name or a last name\
+\cf4 \
+CREATE TABLE Movie(\
+	id int, \
+	title varchar(\cf5 100\cf4 ) not null,\
+	year int,\
+	rating varchar(\cf5 10\cf4 ),\
+	company varchar(\cf5 50\cf4 ),\
+	primary key (id)\
+		\cf2 -- id is a primary key Movie\
+\cf4 	) ENGINE = INNODB;\
+\
+CREATE TABLE Actor(\
+	id int, \
+	last varchar(\cf5 20\cf4 ),\
+	first varchar(\cf5 20\cf4 ),\
+	sex varchar(\cf5 6\cf4 ),\
+	dob date not null,\
+	dod date,\
+	primary key (id),\
+		\cf2 -- id is a primary key of Actor\
+\cf4 	CHECK(last is not null OR first is not null),\
+		 \cf2 -- must have a first name or a last name\
+\cf4 	CHECK(dod is null OR dob < dod)\
+		\cf2 -- date of birth is earlier than date of death\
+\cf4     ) ENGINE = INNODB;\
+\
+CREATE TABLE Director(\
+	id int,\
+	last varchar(\cf5 20\cf4 ),\
+	first varchar(\cf5 20\cf4 ),\
+	dob date not null,\
+	dod date,\
+	primary key (id),\
+		\cf2 -- id is a primary key of Director\
+\cf4 	CHECK(last is not null OR first is not null),\
+		\cf2 -- must have a first name or a last name\
+\cf4 	CHECK(dod is null OR dob < dod)\
+		\cf2 -- date of birth is earlier than date of death\
+\cf4     ) ENGINE = INNODB;\
+\
+CREATE TABLE MovieGenre(\
+	mid int,\
+	genre varchar(\cf5 20\cf4 ),\
+	foreign key (mid) references Movie(id)\
+		\cf2 -- mid in MovieGenre is a foreign key from Movie\
+\cf4     ) ENGINE = INNODB;\
+\
+CREATE TABLE MovieDirector(\
+	mid int,\
+	did int,\
+	foreign key (mid) references Movie(id),\
+		\cf2 -- mid in MovieDirector is a foreign key from Movie\
+\cf4 	foreign key (did) references Director(id)\
+		\cf2 -- did in MovieDirector is a foreign key from Director\
+\cf4     ) ENGINE = INNODB;\
+\
+CREATE TABLE MovieActor(\
+	mid int,\
+	aid int,\
+	role varchar(\cf5 50\cf4 ) not null,\
+	foreign key (mid) references Movie(id),\
+		\cf2 -- mid in MovieActor is a foreign key from Movie\
+\cf4 	foreign key (aid) references Actor(id)\
+		\cf2 -- aid in MovieActor is a foreign key from Actor\
+\cf4     ) ENGINE = INNODB;\
+\
+CREATE TABLE Review(\
+	name varchar(\cf5 20\cf4 ),\
+	time timestamp,\
+	mid int,\
+	rating int,\
+	comment varchar(\cf5 500\cf4 ),\
+	foreign key (mid) references Movie(id),\
+		\cf2 -- mid in Review is a foreign key from Movie\
+\cf4 	CHECK (rating > \cf5 0\cf4  and rating <= \cf5 5\cf4 )\
+		\cf2 -- rating in review is between 0 to 5\
+\cf4     ) ENGINE = INNODB;\
+\
+CREATE TABLE MaxPersonID(\
+	id int,\
+	primary key (id)\
+    ) ENGINE = INNODB;\
+\
+CREATE TABLE MaxMovieID(\
+	id int,\
+	primary key (id)\
+    ) ENGINE = INNODB;}
